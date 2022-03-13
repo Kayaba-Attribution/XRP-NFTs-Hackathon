@@ -4,6 +4,8 @@
     /* import the ipfs-http-client library */
     //import { create } from 'ipfs-http-client';
     import { xrpl } from "$lib/xrp.js";
+	import { secret, address } from '$lib/xrpUtils';
+
 
     let hash = '';
 
@@ -54,13 +56,13 @@
     //** Mint Token *************
     //***************************
 
-    let secret = 'snc2f4ECYGbtgDggprr8DRrrvLc9v'
+    //let secret = 'snc2f4ECYGbtgDggprr8DRrrvLc9v'
     //let tokenUrl = `ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf4dfuylqabf3oclgtqy55fbzdi`
     let flags = 8;
     
     async function mintToken(hash) {
         let tokenUrl = `https://gateway.pinata.cloud/ipfs/${hash}`
-        const wallet = xrpl.Wallet.fromSeed(secret)
+        const wallet = xrpl.Wallet.fromSeed($secret)
         const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233")
         await client.connect()
         console.log("Connected to Sandbox")

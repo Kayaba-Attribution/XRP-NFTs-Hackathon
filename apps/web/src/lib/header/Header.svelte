@@ -3,23 +3,47 @@
 	import { base } from '$app/paths';
 
 	import { tweened } from 'svelte/motion';
-	import { wallet, nativeBalance, nativeBalanceUSD, loginMetamask, chain, wrongNetwork, pickNetwork } from '$lib/eth';
 	import { onMount } from 'svelte'
 	import { themeChange } from 'theme-change'
-	import { spotUSD } from '$lib/ethUtils';
+
+	import { xrpl } from "$lib/xrp.js";
+	import { secret, address, balance, spotUSD } from '$lib/xrpUtils';
 
 
 	// NOTE: the element that is using one of the theme attributes must be in the DOM on mount
 	onMount(async () => {
 		themeChange(false)
-		await loginMetamask()
 		// 👆 false parameter is required for svelte
 	})
 
-	let hamburger = false;
-	function toggleHambuger() {
-		hamburger = !hamburger;
+	let nativeBalanceUSD = 0
+
+	let input_secret=''
+	const newWallet = async () => {
+		//Update Stores With New Info
+		secret.update(n => input_secret);
+		console.log($secret)
+		const wallet = xrpl.Wallet.fromSeed($secret)
+		const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233")
+        await client.connect()
+        console.log("Connected to Sandbox")
+
+		const response = await client.request({
+			"command": "account_info",
+			"account": wallet.classicAddress,
+			"ledger_index": "validated"
+		})
+		let _account = response.result.account_data.Account
+		address.update(n => _account);
+		let _balance = response.result.account_data.Balance
+		balance.update(n => _balance);
+		console.log(_account, _balance)
+		console.log(response.result.account_data)
+		console.log(Number($balance)/10**7)
+		console.log(Number($balance)/10**7)
+		nativeBalanceUSD = Number($balance)/10**7 * (await spotUSD("XRP")) + " USD"
 	}
+
 </script>
 
 <!-- Binding to the window disables themes changes -->
@@ -29,49 +53,56 @@
 	Chain: {$wrongNetwork}
 	Number: {$chain}
 </p> -->
-<div class="fixed invisible w-full mt-12 md:mt-0 px-4
+	<!-- Put this part before </body> tag -->
+	<input type="checkbox" id="my-modal-4" class="modal-toggle">
+	<label for="my-modal-4" class="modal cursor-pointer">
+	<label class="modal-box relative" for="">
+		<h3 class="text-lg font-bold">Please Enter Your Wallet Secret</h3>
+		<p class="py-4">DO NOT ENTER LIVE NETWORK SECRETS!</p>
+		<a class="py-4 link" href="https://xrpl.org/xrp-testnet-faucet.html">Create a testnet wallet here</a>
+		<div class="flex justify-center">
+			<input type="text" bind:value={input_secret} placeholder="sn3nxiW7v8KXzPzAqzyHXbSSKNuN9" class="input input-bordered input-primary w-full max-w-xs my-6">
+		</div>
+		<div class="flex justify-center modal-action">
+			<label for="my-modal-4" class="btn btn-outline btn-success" on:click={newWallet}>Log In</label>
+		</div>
+	</label>
+	</label>
+
+<div class="fixed w-full mt-12 md:mt-0 px-4
  items-center top-2 md:top-14 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-40">
 	<div class="navbar shadow-lg bg-neutral text-neutral-content rounded-box ">
 	<div class="flex-1">
-		<img src="./padawan.png" class="w-10 mr-4" alt="">
+		<img src="./xrp.png" class="w-10 mr-4" alt="">
 		<span class="text-lg font-bold">
-			Evmos Station
+			XRP NFToken Mint
 			<!-- {innerWidth > 798 ? 'PadawanDAO' : 'PDAO'} -->
 		</span>
 	</div> 
 	
 	<div class="flex-none  px-2  lg:flex">
 		<div class="flex items-center">
+				<!-- The button to open modal -->
 		<!-- LOGIN BUTTON -->
 
-
-				<div on:click={() => loginMetamask()} class="m-1 normal-case btn-ghost btn">
-				{#if !$wallet}
+				<label  for="my-modal-4" class="m-1 normal-case btn-ghost btn">
+				{#if !$secret}
 					Connect a wallet
 				{:else}
 					<!-- else content here -->
-					<div data-tip={$nativeBalanceUSD} class="tooltip  hidden md:flex tooltip-bottom">
+					<div data-tip={nativeBalanceUSD} class="tooltip  hidden md:flex tooltip-bottom">
 						<div class="badge mr-2">
-							{$nativeBalance.toFixed(2)} ETH
+							{Number($balance)/10**7} XRP
 						</div>
 					</div>
-					{$wallet.slice(0, 4)}...{$wallet.slice(-4)}
+					{$address.slice(0, 4)}...{$address.slice(-4)}
 				{/if}  
-				</div>
+				</label>
 
 
 		<!-- CHANGE THEME BUTTON -->
 		<div class="hidden md:flex items-center">
 		
-				<div class="p-3">
-					<span class="badge badge-outline">CHAIN 
-						{#if $chain != "none"}
-							{$chain}
-						{:else}
-							---
-						{/if}
-					</span>
-				</div>
 			<!-- content here -->
 			<div title="Change Theme" class="dropdown dropdown-end flex">
 				<div tabindex="0" class="m-1 normal-case btn-ghost btn">

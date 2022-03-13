@@ -1,7 +1,7 @@
 import { Web3Provider } from "@ethersproject/providers";
 import { Contract } from "@ethersproject/contracts";
 import { formatEther } from '@ethersproject/units';
-import { spotUSD, spotMTR } from '$lib/ethUtils';
+import { spotUSD, spotMTR } from '$lib/xrpUtils';
 
 
 import { writable } from "svelte/store";
