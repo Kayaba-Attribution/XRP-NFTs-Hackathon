@@ -12,15 +12,29 @@
     const pinataSecretApiKey = '91e7253b4c7746f3a5661f94a23affea0fb3b8ad663155c2ce1e18c99b09a3b1'
 
         
-    const info = JSON.stringify(
-        {
-            "name": "test"
-        }
-    )
+    const info = {
+        "description": "XLS-20 standard for NFTs testing", 
+        "external_url": "https://openseacreatures.io/3", 
+        "image": "", 
+        "name": "Kayaba Test",
+        "attributes": [], 
+    }
 
-    const pinJSONToIPFSwithFetch = async (JSONBody) => {
-        const url = `https://api.pinata.cloud/pinning/pinJSONToIPFS`;
-        console.log(`Pinning: \n ${JSONBody}`)
+
+    let base64Img, fileinput;
+	
+	const onFileSelected =(e)=>{
+    let image = e.target.files[0];
+            let reader = new FileReader();
+            reader.readAsDataURL(image);
+            reader.onload = e => {
+                base64Img = e.target.result
+                info.image = e.target.result
+            };
+    }
+
+    const pinJSONToIPFS = async () => {
+        let url = `https://api.pinata.cloud/pinning/pinJSONToIPFS`;
         const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -28,7 +42,7 @@
                 pinata_api_key: pinataApiKey,
                 pinata_secret_api_key: pinataSecretApiKey
             },
-            body: JSONBody
+            body: JSON.stringify(info)
         });
         var res = await response.json()
         hash = res.IpfsHash
@@ -40,11 +54,12 @@
     //** Mint Token *************
     //***************************
 
-    var secret = 'snc2f4ECYGbtgDggprr8DRrrvLc9v'
-    var tokenUrl = 'ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf4dfuylqabf3oclgtqy55fbzdi'
-    var flags = 8;
+    let secret = 'snc2f4ECYGbtgDggprr8DRrrvLc9v'
+    //let tokenUrl = `ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf4dfuylqabf3oclgtqy55fbzdi`
+    let flags = 8;
     
-    async function mintToken() {
+    async function mintToken(hash) {
+        let tokenUrl = `https://gateway.pinata.cloud/ipfs/${hash}`
         const wallet = xrpl.Wallet.fromSeed(secret)
         const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233")
         await client.connect()
@@ -53,6 +68,7 @@
         // Note that you must convert the token URL to a hexadecimal
         // value for this transaction.
         // ----------------------------------------------------------
+        console.log("Minting NFT with url:", tokenUrl)
         const transactionBlob = {
             TransactionType: "NFTokenMint",
             Account: wallet.classicAddress,
@@ -76,17 +92,6 @@
         client.disconnect()
     } //End of mintToken
 
-
-    let base64Img, fileinput;
-	
-	const onFileSelected =(e)=>{
-    let image = e.target.files[0];
-            let reader = new FileReader();
-            reader.readAsDataURL(image);
-            reader.onload = e => {
-                 base64Img = e.target.result
-            };
-    }
 </script>
 
 <div class="mt-20">
@@ -105,31 +110,29 @@
             {/if}
         </figure>
         <div class="card-body items-center text-center">
-          <h2 class="card-title">Upload an Image</h2>
+          <h2 class="card-title">
+            {#if !base64Img}
+                Upload an Image
+            {:else if base64Img && (hash == '')}
+                Pin to IPFS
+            {:else}
+                Mint NFT
+            {/if}
+            </h2>
           <p>Please use .jpg, .jpeg, and .png only</p>
           <div class="card-actions">
             {#if !base64Img}
             <button class="btn btn-primary" on:click={()=>{fileinput.click();}}>Upload</button>
             {:else}
-            <!-- <button class="btn btn-primary" on:click={()=>{pinFileToIPFS(base64Img)}}>Save to IPFS</button> -->
-            <button class="btn btn-primary" on:click={()=>{pinJSONToIPFSwithFetch(info)}}>Save to IPFS</button>
+            <button class="btn btn-primary" on:click={()=>{pinJSONToIPFS(info)}} disabled={hash !== ''}>Save to IPFS</button>
             {/if}
         </div>
-        <div class="text-sm text-center">{hash ? `IPFS HASH:\n ${hash}` : ''}</div>
+        {#if hash}
+            <a href="https://gateway.pinata.cloud/ipfs/{hash}" class="link">IPFS Gateway to CID</a>
+            <button class="btn btn-primary" on:click={mintToken(hash)}>Mint XLS-20 NFT</button>
+        {/if}
         </div>
     </div>
 
 
-    <div class="card w-96 bg-base-100 shadow-xl">
-        <figure class="px-10 pt-10">
-          <img src="https://api.lorem.space/image/shoes?w=400&h=225" alt="Shoes" class="rounded-xl">
-        </figure>
-        <div class="card-body items-center text-center">
-          <h2 class="card-title">Mint An NFT!</h2>
-          <p>If a dog chews shoes whose shoes does he choose?</p>
-          <div class="card-actions">
-            <button class="btn btn-primary" on:click={mintToken}>Buy Now</button>
-          </div>
-        </div>
-    </div>
 </div>
