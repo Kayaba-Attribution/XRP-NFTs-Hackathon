@@ -1,6 +1,6 @@
 import { writable } from "svelte/store";
 
-export const secret = writable('snX9D14SETVtByEkYQaKbdiuFRrxz')
+export const secret = writable('sh6vUtrchEro2smrMGyMtyQnW1wdS')
 export const address = writable('')
 export const balance = writable('0')
 
