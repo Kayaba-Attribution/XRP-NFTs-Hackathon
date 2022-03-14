@@ -20,7 +20,7 @@
 			name={nft.name}
 			description={nft.description}
 			issuer={nft.issuer}
-			tokenID={nft.tokenID.TokenID}
+			tokenID={nft.tokenID}
 			image={nft.image}
 		/>
 	{:else}

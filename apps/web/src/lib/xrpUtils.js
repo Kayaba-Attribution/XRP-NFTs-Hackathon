@@ -1,10 +1,10 @@
 import { writable } from "svelte/store";
 
-export const secret = writable('sh6vUtrchEro2smrMGyMtyQnW1wdS')
+export const secret = writable('saNWXQyazyf4xiArQ3DjzYtD9VVtU')
 export const address = writable('')
 export const balance = writable('0')
 
-export function findNewTokenId(before, after){
+export async function findNewTokenId(before, after){
     let _before = []
     let _after = []
 

@@ -73,7 +73,7 @@
             try {
                 nftSellOffers = await client.request({
                 method: "nft_sell_offers",
-                tokenid: tokenId.value
+                tokenid: _tokenId
             })
             } catch (err) {
                 console.log("No sell offers.")
@@ -84,7 +84,7 @@
         try {
             nftBuyOffers = await client.request({
             method: "nft_buy_offers",
-            tokenid: tokenId.value })
+            tokenid: _tokenId })
         } catch (err) {
             console.log("No buy offers.")
         }
@@ -96,12 +96,47 @@
         console.log("Balance changes:",
             JSON.stringify(xrpl.getBalanceChanges(tx.result.meta), null, 2))
         client.disconnect()
+        setForOffer()
         // End of createSellOffer()
         }
 
+    async function getSellOffers(_tokenId){
+        const wallet = xrpl.Wallet.fromSeed($secret)
+        const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233")
+        await client.connect()
+        console.log("Connected to Sandbox")
+
+        let nftSellOffers
+            try {
+                nftSellOffers = await client.request({
+                method: "nft_sell_offers",
+                tokenid: _tokenId,
+            }, {wallet})
+            } catch (err) {
+                console.log("No sell offers.", err)
+            }
+        console.log(JSON.stringify(nftSellOffers,null,2))
+        console.log("***Buy Offers***")
+        let nftBuyOffers
+        try {
+            nftBuyOffers = await client.request({
+            method: "nft_buy_offers",
+            tokenid: _tokenId })
+        } catch (err) {
+            console.log("No buy offers.")
+        }
+        console.log(JSON.stringify(nftBuyOffers,null,2))
+        client.disconnect()
+        // End of createSellOffer()
+    }
+
     let offer = false;
+    let seeOffers = false;
     let sellPrice;
 
+    function setToSeeOffers(){
+        seeOffers = !seeOffers
+    }
     function setForOffer(){
         offer = !offer
     }
@@ -124,6 +159,7 @@
         <div class="card-actions">
         <button class="btn btn-primary" on:click={() => burnToken(tokenID)}>Burn NFT</button>
         <button class="btn btn-primary" on:click={setForOffer}>Offer Sell</button>
+        <button class="btn btn-primary" on:click={async () => {setToSeeOffers(); await getSellOffers()}}>See Sell Offers</button>
         </div>
         {#if offer}
             <div class="form-control">
@@ -137,6 +173,9 @@
                 
             </div>
             <button class="btn btn-primary" on:click={createSellOffer(tokenID)}>Set For Sell</button>
+        {/if}
+        {#if seeOffers}
+            <p>Offers</p>
         {/if}
         </div>
 </div>
