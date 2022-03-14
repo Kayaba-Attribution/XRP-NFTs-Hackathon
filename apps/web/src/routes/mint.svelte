@@ -88,11 +88,31 @@
         console.log(nfts)
     
         // Check transaction results -------------------------------------------------
-        console.log("Transaction result:", tx.result.meta.TransactionResult)
+        if(tx.result.meta.TransactionResult === 'tesSUCCESS'){
+            console.log("MINT SUCCESS")
+            addNFT()
+        }
         console.log("Balance changes:",
           JSON.stringify(xrpl.getBalanceChanges(tx.result.meta), null, 2))
         client.disconnect()
     } //End of mintToken
+
+    async function addNFT() {
+        try {
+            const response = await fetch('/nfts', {
+                method: 'POST', 
+                headers: {
+                'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(info)
+            })
+            var res = await response.json()
+            console.log(res)
+        } catch (e) {
+            console.log("ERROS", e)
+        }
+
+    }
 
 </script>
 
