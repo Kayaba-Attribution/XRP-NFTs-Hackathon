@@ -37,7 +37,7 @@
             </div>
         </div> 
         <div class="grid flex-grow md:w-1/3 card rounded-box place-items-center">
-            <img src="./index.gif" alt="Shoes">
+            <img src="./indeximg.gif" alt="Shoes">
         </div>
 
         
