@@ -1,6 +1,6 @@
 
 <script>
-import { wallet } from "$lib/eth";
+
 
     export let name = 'Default Name'
     export let description = 'Defatult Description'
