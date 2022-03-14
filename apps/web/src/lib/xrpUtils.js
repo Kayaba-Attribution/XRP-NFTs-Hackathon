@@ -1,12 +1,15 @@
 import { writable } from "svelte/store";
 
-export const secret = writable('ssWvjasnNvECNqTuFnAYxkTCy3jyc')
+export const secret = writable('sna9D6XZr2T2ZgKTTWFYCuycfCWrX')
 export const address = writable('')
 export const balance = writable('0')
 
 export function findNewTokenId(before, after){
     let _before = []
     let _after = []
+
+    console.log(before)
+    console.log(after)
 
     for (let i = 0; i < after.length; i++) {
         _after.push(after[i].TokenID)

@@ -94,13 +94,13 @@
         if(latestNFT.length == 1){
             difference.push(latestNFT[0])
         } else{
-            let previousNFTS = tx.result.meta.AffectedNodes[1].ModifiedNode.PreviousFields.NonFungibleTokens
+            let previousNFTS = tx.result.meta.AffectedNodes[0].ModifiedNode.PreviousFields.NonFungibleTokens
             difference = findNewTokenId(previousNFTS, latestNFT)
         }
     
         // Check transaction results -------------------------------------------------
         if(tx.result.meta.TransactionResult === 'tesSUCCESS'){
-            info.issuer = latestNFT.Issuer
+            info.issuer = tx.result.Account
             info.tokenID = difference[0]
             console.log("MINT SUCCESS")
             addNFT()
