@@ -6,7 +6,7 @@
     import { xrpl } from "$lib/xrp.js";
 	import { secret, address, findNewTokenId } from '$lib/xrpUtils';
     import { onMount } from "svelte";
-    import NFT from './nftCard.svelte'
+    import NFT from './nftCardUser.svelte'
     onMount(async () => {
         CleanNFTs = await getNFTS()
     })
