@@ -78,6 +78,13 @@
             Flags: parseInt(flags),
             TokenTaxon: 0 //Required, but if you have no use for it, set to zero.
         }
+        //Get previous NFTS
+        const Pnfts = await client.request({
+            method: "account_nfts",
+            account: wallet.classicAddress
+        })
+        console.log(Pnfts)
+
         // Submit signed blob --------------------------------------------------------
         const tx = await client.submitAndWait(transactionBlob,{wallet})
         console.log(tx)
@@ -92,9 +99,9 @@
 
         let latestNFT = nfts.result.account_nfts
         if(latestNFT.length == 1){
-            difference.push(latestNFT[0].tokenID.TokenID)
+            difference.push(latestNFT[0].TokenID)
         } else{
-            let previousNFTS = tx.result.meta.AffectedNodes[0].ModifiedNode.PreviousFields.NonFungibleTokens
+            let previousNFTS = Pnfts.result.account_nfts
             difference = await findNewTokenId(previousNFTS, latestNFT)
         }
     
@@ -135,7 +142,7 @@
 
     <div class="text-4xl font-bold py-5 text-center">Upload image</div>
 
-
+    <div class="flex justify-center">
     <input style="display:none" type="file" accept=".jpg, .jpeg, .png" on:change={(e)=>onFileSelected(e)} bind:this={fileinput} >
     <div class="card w-96 bg-base-100 shadow-xl">
         <figure class="px-10 pt-10">
@@ -174,9 +181,10 @@
                 <span class="label-text">Your NFT Description</span>
             </label>
             <input bind:value={info.description} type="text" placeholder="This NFT represents..." class="input input-bordered input-success w-full max-w-xs">
-            <button class="btn btn-primary" on:click={mintToken(hash)}>Mint XLS-20 NFT</button>
+            <button class="btn btn-primary my-3" on:click={mintToken(hash)}>Mint XLS-20 NFT</button>
         {/if}
         </div>
+    </div>
     </div>
 
 

@@ -69,7 +69,7 @@
 	</label>
 	</label>
 
-<div class="fixed invisible w-full mt-12 md:mt-0 px-4
+<div class="fixed w-full mt-12 md:mt-0 px-4
  items-center top-2 md:top-14 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-40">
 	<div class="navbar shadow-lg bg-neutral text-neutral-content rounded-box ">
 	<div class="flex-1">
@@ -153,7 +153,7 @@
 
 			<div title="Github ↗︎" class="items-center flex-none mr-2">
 				<a aria-label="Github"
-					target="_blank" href="https://github.com/Kayaba-Attribution/EVM-frame" rel="noopener"
+					target="_blank" href="https://github.com/Kayaba-Attribution/XRP-NFTs-Hackathon" rel="noopener"
 					class="normal-case btn btn-ghost drawer-button btn-square">
 					<svg
 						xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"

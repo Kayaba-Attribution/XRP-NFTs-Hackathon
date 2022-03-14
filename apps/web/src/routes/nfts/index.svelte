@@ -14,7 +14,7 @@
 <div class="mt-20">
 <div class="text-4xl font-bold text-center my-5">All NFTs Minted Here</div>
 
-<div class="photos">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
 	{#each nfts as nft}
 		<NFT 
 			name={nft.name}

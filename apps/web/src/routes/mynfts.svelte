@@ -6,12 +6,11 @@
     import { xrpl } from "$lib/xrp.js";
 	import { secret, address, findNewTokenId } from '$lib/xrpUtils';
     import { onMount } from "svelte";
-    import NFT from './nftCardUser.svelte'
+    import NFT from './nftCard.svelte'
     onMount(async () => {
         CleanNFTs = await getNFTS()
     })
 
-        
     const info = {
         "name": "Kayaba Test",
         "description": "XLS-20 standard for NFTs testing", 
@@ -67,11 +66,13 @@
 </script>
 
 <div class="mt-20">
-    <div class="text-4xl font-bold text-center my-5">All NFTs Minted Here</div>
-    <div>NFTS: {CleanNFTs.length}</div>
-    <div class="btn btn-primary" on:click={refreshInfo}>Refresh</div>
+    <div class="text-4xl font-bold text-center my-5">Manage Your NFTs</div>
+    <div class="text-center">NFTS: {CleanNFTs.length}</div>
+    <div class="flex justify-center my-5">
+        <div class="btn btn-primary" on:click={refreshInfo}>Refresh</div>
+    </div>
     
-    <div class="photos">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
         {#each CleanNFTs as nft, i}
             <NFT 
                 name={nft.name}
@@ -79,6 +80,7 @@
                 issuer={nfts[i].Issuer}
                 tokenID={nfts[i].TokenID}
                 image={nft.image}
+                owner={true}
             />
         {:else}
             <!-- this block renders when photos.length === 0 -->

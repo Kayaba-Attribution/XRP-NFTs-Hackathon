@@ -1,6 +1,6 @@
 import { writable } from "svelte/store";
-
-export const secret = writable('ssrnPLtpXGami1c4v7Vv8nsp2Vz92')
+//sp54EtKddM7gRQxcY9ienDTXxM9QL
+export const secret = writable('ssB3HvQqyLMqSvKNgf2zTVh2zeKBj')
 export const address = writable('')
 export const balance = writable('0')
 
@@ -14,7 +14,7 @@ export async function findNewTokenId(before, after){
     for (let i = 0; i < after.length; i++) {
         _after.push(after[i].TokenID)
         if(i < before.length){
-            _before.push(before[i].NonFungibleToken.TokenID)
+            _before.push(before[i].TokenID)
         }
     }
 
