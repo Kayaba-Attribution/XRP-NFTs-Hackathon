@@ -73,7 +73,9 @@
  items-center top-2 md:top-14 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-40">
 	<div class="navbar shadow-lg bg-neutral text-neutral-content rounded-box ">
 	<div class="flex-1">
-		<img src="./xrp.png" class="w-10 mr-4" alt="">
+		<a href="/">
+			<img src="./xrp.png" class="w-10 mr-4" alt="">
+		</a>
 		<span class="text-lg font-bold">
 			XRP NFToken Mint
 			<!-- {innerWidth > 798 ? 'PadawanDAO' : 'PDAO'} -->
@@ -175,6 +177,8 @@
  
 
 </div>
+
+
 <style>
 /* Add custom Styles here */
 </style>
