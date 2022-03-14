@@ -4,7 +4,7 @@
     /* import the ipfs-http-client library */
     //import { create } from 'ipfs-http-client';
     import { xrpl } from "$lib/xrp.js";
-	import { secret, address } from '$lib/xrpUtils';
+	import { secret, address, findNewTokenId } from '$lib/xrpUtils';
 
 
     let hash = '';
@@ -15,11 +15,11 @@
 
         
     const info = {
-        "description": "XLS-20 standard for NFTs testing", 
-        "external_url": "https://openseacreatures.io/3", 
-        "image": "", 
         "name": "Kayaba Test",
-        "attributes": [], 
+        "description": "XLS-20 standard for NFTs testing", 
+        "issuer": "",
+        "tokenID": "",
+        "image": "", 
     }
 
 
@@ -80,15 +80,28 @@
         }
         // Submit signed blob --------------------------------------------------------
         const tx = await client.submitAndWait(transactionBlob,{wallet})
+        console.log(tx)
     
         const nfts = await client.request({
             method: "account_nfts",
             account: wallet.classicAddress
         })
         console.log(nfts)
+
+        let difference = []
+
+        let latestNFT = nfts.result.account_nfts
+        if(latestNFT.length == 1){
+            difference.push(latestNFT[0])
+        } else{
+            let previousNFTS = tx.result.meta.AffectedNodes[1].ModifiedNode.PreviousFields.NonFungibleTokens
+            difference = findNewTokenId(previousNFTS, latestNFT)
+        }
     
         // Check transaction results -------------------------------------------------
         if(tx.result.meta.TransactionResult === 'tesSUCCESS'){
+            info.issuer = latestNFT.Issuer
+            info.tokenID = difference[0]
             console.log("MINT SUCCESS")
             addNFT()
         }
@@ -99,7 +112,7 @@
 
     async function addNFT() {
         try {
-            const response = await fetch('/nfts', {
+            const response = await fetch('/api/nfts', {
                 method: 'POST', 
                 headers: {
                 'Content-Type': 'application/json',
@@ -148,9 +161,18 @@
             {:else}
             <button class="btn btn-primary" on:click={()=>{pinJSONToIPFS(info)}} disabled={hash !== ''}>Save to IPFS</button>
             {/if}
+            
         </div>
         {#if hash}
             <a href="https://gateway.pinata.cloud/ipfs/{hash}" class="link">IPFS Gateway to CID</a>
+            <label class="label">
+                <span class="label-text">Your NFT name</span>
+            </label>
+            <input bind:value={info.name} type="text" placeholder="XRP-Hackathon Mage" class="input input-bordered input-success w-full max-w-xs">
+            <label class="label">
+                <span class="label-text">Your NFT Description</span>
+            </label>
+            <input bind:value={info.description} type="text" placeholder="This NFT represents..." class="input input-bordered input-success w-full max-w-xs">
             <button class="btn btn-primary" on:click={mintToken(hash)}>Mint XLS-20 NFT</button>
         {/if}
         </div>

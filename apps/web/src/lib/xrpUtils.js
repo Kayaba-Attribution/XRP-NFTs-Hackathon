@@ -1,8 +1,25 @@
 import { writable } from "svelte/store";
 
-export const secret = writable('snc2f4ECYGbtgDggprr8DRrrvLc9v')
+export const secret = writable('ssWvjasnNvECNqTuFnAYxkTCy3jyc')
 export const address = writable('')
 export const balance = writable('0')
+
+export function findNewTokenId(before, after){
+    let _before = []
+    let _after = []
+
+    for (let i = 0; i < after.length; i++) {
+        _after.push(after[i].TokenID)
+        if(i < before.length){
+            _before.push(before[i].NonFungibleToken.TokenID)
+        }
+    }
+
+    let difference = _after.filter(x => !_before.includes(x));
+
+    console.log("New Token ID:", difference)
+    return difference
+}
 
 
 export async function spotUSD(_symbol){
@@ -24,3 +41,4 @@ export async function spotMTR(){
 export function formatDate(timestamp){
     return new Date(timestamp * 1000).toLocaleString([],{year: 'numeric', month: 'numeric', day: 'numeric'})
 }
+

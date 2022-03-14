@@ -5,6 +5,7 @@ export async function get(request) {
     const db = dbConnection.db();
     const collection = db.collection('nfts-tc');
     const all = await collection.find().toArray()
+    console.log(all[0])
 
   return {
     status: 200,
@@ -26,7 +27,7 @@ export async function post({request}) {
         return {
             status: 200,
             body: {
-                error: 'Success'
+                status: 'Success'
             }
         }
     } catch (error) {
