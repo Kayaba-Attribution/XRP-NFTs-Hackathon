@@ -76,6 +76,7 @@
         </div>
     {/if}
     <div class="text-4xl font-bold text-center my-5">Manage Your NFTs</div>
+    <div class="text-center">If you know that you have NFTs please click refresh and/or reload the page</div>
     <div class="text-center">NFTS: {CleanNFTs.length}</div>
     <div class="flex justify-center my-5">
         <div class="btn btn-primary" on:click={refreshInfo}>Refresh</div>

@@ -122,7 +122,9 @@
     //** Create Sell Offer ***********
     //********************************
 
+    let creatingSellOffer = false;
     async function createSellOffer(_tokenId) {
+        creatingSellOffer = true
         const wallet = xrpl.Wallet.fromSeed($secret)
         const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233")
         await client.connect()
@@ -173,6 +175,7 @@
             JSON.stringify(xrpl.getBalanceChanges(tx.result.meta), null, 2))
         client.disconnect()
         setForOffer()
+        creatingSellOffer = false
         // End of createSellOffer()
         }
 
@@ -181,7 +184,9 @@
     //** Create Buy Offer ***********
     //********************************
     let sellPrice;
+    let creatingBuyOffer = false;
     async function createBuyOffer(_tokenId, issuer) {
+        creatingBuyOffer = true
 
         const wallet = xrpl.Wallet.fromSeed($secret)
         const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233")
@@ -230,6 +235,7 @@
         console.log("Balance changes:",
         JSON.stringify(xrpl.getBalanceChanges(tx.result.meta), null, 2))
         client.disconnect()
+        creatingBuyOffer = false
         // End of createBuyOffer()
     }
 
@@ -405,9 +411,9 @@
                 
             </div>
             {#if owner}
-                <button class="btn btn-primary my-5" on:click={createSellOffer(tokenID)}>Create Sell Offer</button>
+                <button class="btn btn-primary my-5 {creatingSellOffer ? "loading" : ''}" on:click={createSellOffer(tokenID)}>Create Sell Offer</button>
             {:else}
-                <button class="btn btn-primary my-5" on:click={createBuyOffer(tokenID, issuer)}>Create Buy Offer</button>
+                <button class="btn btn-primary my-5 {creatingBuyOffer ? "loading" : ''}" on:click={createBuyOffer(tokenID, issuer)}>Create Buy Offer</button>
             {/if}
         {/if}
     </div>
