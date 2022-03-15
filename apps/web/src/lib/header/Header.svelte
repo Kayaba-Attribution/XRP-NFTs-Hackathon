@@ -5,7 +5,7 @@
 	import { tweened } from 'svelte/motion';
 	import { onMount } from 'svelte'
 	import { themeChange } from 'theme-change'
-	import { secret, address, balance, spotUSD, addWallet, loadSecretFromLocal, saveSecretLocal } from '$lib/xrpUtils';
+	import { secret, address, balance, spotUSD, addWallet, loadSecretFromLocal, nativeBalanceUSD } from '$lib/xrpUtils';
 
 
 	// NOTE: the element that is using one of the theme attributes must be in the DOM on mount
@@ -15,7 +15,6 @@
 		await loadSecretFromLocal()
 	})
 
-	let nativeBalanceUSD = 0
 
 	let input_secret=''
 	let modalState = false
@@ -73,7 +72,7 @@
 					Connect a wallet
 				{:else}
 					<!-- else content here -->
-					<div data-tip={nativeBalanceUSD} class="tooltip  hidden md:flex tooltip-bottom">
+					<div data-tip={$nativeBalanceUSD} class="tooltip  hidden md:flex tooltip-bottom">
 						<div class="badge mr-2">
 							{Number($balance)/10**7} XRP
 						</div>

@@ -369,7 +369,7 @@
     </div>
         {#if seeOffers}
             {#each sellOffers as sellO, i}
-                <div class="stats shadow">
+                <div class="stats shadow my-2">
     
                     <div class="stat">
                     <div class="stat-title">Sell Offer Amount</div>
@@ -384,7 +384,7 @@
                 {/if}
             {/each}
             {#each buyOffers as buyO, i}
-            <div class="stats shadow">
+            <div class="stats shadow my-2">
 
                 <div class="stat">
                 <div class="stat-title">Buy Offer Amount</div>
@@ -395,7 +395,11 @@
             {#if owner}
             <button on:click={() => acceptBuyOffer(buyO.index)} class="btn btn-success">Accept Offer of {buyO.amount/10**6} XRP </button>
             {:else}
-            <button on:click={() => cancelOffer(buyO.index)} class="btn btn-error">Cancel Buy for {buyO.amount/10**6} XRP </button>
+            <!-- Only allow the owner to cancel the offer (purely UI) -->
+            {#if buyO.owner == address}
+                 <!-- content here -->
+                 <button on:click={() => cancelOffer(buyO.index)} class="btn btn-error">Cancel Buy for {buyO.amount/10**6} XRP </button>
+            {/if}
             {/if}
         {/each}
         {/if}
