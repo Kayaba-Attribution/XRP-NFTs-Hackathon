@@ -9,7 +9,7 @@
 	let nfts = [];
     onMount(async () => {
         const res = await fetch(`/api/nfts`);
-        nfts = await res.json()
+        nfts = (await res.json()).reverse()
 		console.log(nfts[0])
     })
 </script>
