@@ -1,11 +1,19 @@
 <script>
 	import { secret, address, findNewTokenId } from '$lib/xrpUtils';
+    import { onMount } from 'svelte';
+    let savedSecret;
+    onMount(() => {
+        //localStorage.setItem("secret", "sp54EtKddM7gRQxcY9ienDTXxM9QL")
+        savedSecret = localStorage.getItem("secret")
+    })
 
+    
 </script>
 
 <div class="mt-20">
 
-
+    <h2>HI {savedSecret}</h2>
+    <h2>Secret {$secret}</h2>
     {#if !$secret}
         <div class="alert alert-error shadow-lg">
         <div>

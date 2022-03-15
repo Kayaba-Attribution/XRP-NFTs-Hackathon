@@ -5,44 +5,20 @@
 	import { tweened } from 'svelte/motion';
 	import { onMount } from 'svelte'
 	import { themeChange } from 'theme-change'
-
-	import { xrpl } from "$lib/xrp.js";
-	import { secret, address, balance, spotUSD } from '$lib/xrpUtils';
+	import { secret, address, balance, spotUSD, addWallet, loadSecretFromLocal, saveSecretLocal } from '$lib/xrpUtils';
 
 
 	// NOTE: the element that is using one of the theme attributes must be in the DOM on mount
 	onMount(async () => {
 		themeChange(false)
 		// 👆 false parameter is required for svelte
+		await loadSecretFromLocal()
 	})
 
 	let nativeBalanceUSD = 0
 
 	let input_secret=''
-	const newWallet = async () => {
-		//Update Stores With New Info
-		secret.update(n => input_secret);
-		console.log($secret)
-		const wallet = xrpl.Wallet.fromSeed($secret)
-		const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233")
-        await client.connect()
-        console.log("Connected to Sandbox")
-
-		const response = await client.request({
-			"command": "account_info",
-			"account": wallet.classicAddress,
-			"ledger_index": "validated"
-		})
-		let _account = response.result.account_data.Account
-		address.update(n => _account);
-		let _balance = response.result.account_data.Balance
-		balance.update(n => _balance);
-		console.log(_account, _balance)
-		console.log(response.result.account_data)
-		console.log(Number($balance)/10**7)
-		console.log(Number($balance)/10**7)
-		nativeBalanceUSD = Number($balance)/10**7 * (await spotUSD("XRP")) + " USD"
-	}
+	let modalState = false
 
 </script>
 
@@ -55,7 +31,7 @@
 </p> -->
 	<!-- Put this part before </body> tag -->
 	<input type="checkbox" id="my-modal-4" class="modal-toggle">
-	<label for="my-modal-4" class="modal cursor-pointer">
+	<label for="my-modal-4" class="modal {modalState ? "modal-open" : ""} cursor-pointer">
 	<label class="modal-box relative" for="">
 		<h3 class="text-lg font-bold">Please Enter Your Wallet Secret</h3>
 		<p class="py-4">DO NOT ENTER LIVE NETWORK SECRETS!</p>
@@ -64,7 +40,7 @@
 			<input type="text" bind:value={input_secret} placeholder="sn3nxiW7v8KXzPzAqzyHXbSSKNuN9" class="input input-bordered input-primary w-full max-w-xs my-6">
 		</div>
 		<div class="flex justify-center modal-action">
-			<label for="my-modal-4" class="btn btn-outline btn-success" on:click={newWallet}>Log In</label>
+			<label for="my-modal-4" class="btn btn-outline btn-success" on:click={async () => { await addWallet(input_secret)}}>Log In</label>
 		</div>
 	</label>
 	</label>
