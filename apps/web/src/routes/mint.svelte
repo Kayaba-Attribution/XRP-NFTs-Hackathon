@@ -37,6 +37,7 @@
 
     const pinJSONToIPFS = async () => {
         let url = `https://api.pinata.cloud/pinning/pinJSONToIPFS`;
+        console.log(info)
         const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -59,63 +60,74 @@
     //let secret = 'snc2f4ECYGbtgDggprr8DRrrvLc9v'
     //let tokenUrl = `ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf4dfuylqabf3oclgtqy55fbzdi`
     let flags = 8;
+    let succesAlert = ''
+    let errorAlert = ''
     
     async function mintToken(hash) {
-        let tokenUrl = `https://gateway.pinata.cloud/ipfs/${hash}`
-        const wallet = xrpl.Wallet.fromSeed($secret)
-        const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233")
-        await client.connect()
-        console.log("Connected to Sandbox")
-    
-        // Note that you must convert the token URL to a hexadecimal
-        // value for this transaction.
-        // ----------------------------------------------------------
-        console.log("Minting NFT with url:", tokenUrl)
-        const transactionBlob = {
-            TransactionType: "NFTokenMint",
-            Account: wallet.classicAddress,
-            URI: xrpl.convertStringToHex(tokenUrl),
-            Flags: parseInt(flags),
-            TokenTaxon: 0 //Required, but if you have no use for it, set to zero.
-        }
-        //Get previous NFTS
-        const Pnfts = await client.request({
-            method: "account_nfts",
-            account: wallet.classicAddress
-        })
-        console.log(Pnfts)
+        try {
+            let tokenUrl = `https://gateway.pinata.cloud/ipfs/${hash}`
+            const wallet = xrpl.Wallet.fromSeed($secret)
+            const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233")
+            await client.connect()
+            console.log("Connected to Sandbox")
+        
+            // Note that you must convert the token URL to a hexadecimal
+            // value for this transaction.
+            // ----------------------------------------------------------
+            console.log("Minting NFT with url:", tokenUrl)
+            const transactionBlob = {
+                TransactionType: "NFTokenMint",
+                Account: wallet.classicAddress,
+                URI: xrpl.convertStringToHex(tokenUrl),
+                Flags: parseInt(flags),
+                TokenTaxon: 0 //Required, but if you have no use for it, set to zero.
+            }
+            //Get previous NFTS
+            const Pnfts = await client.request({
+                method: "account_nfts",
+                account: wallet.classicAddress
+            })
+            console.log(Pnfts)
 
-        // Submit signed blob --------------------------------------------------------
-        const tx = await client.submitAndWait(transactionBlob,{wallet})
-        console.log(tx)
-    
-        const nfts = await client.request({
-            method: "account_nfts",
-            account: wallet.classicAddress
-        })
-        console.log(nfts)
+            // Submit signed blob --------------------------------------------------------
+            const tx = await client.submitAndWait(transactionBlob,{wallet})
+            console.log(tx)
+        
+            const nfts = await client.request({
+                method: "account_nfts",
+                account: wallet.classicAddress
+            })
+            console.log(nfts)
 
-        let difference = []
+            let difference = []
 
-        let latestNFT = nfts.result.account_nfts
-        if(latestNFT.length == 1){
-            difference.push(latestNFT[0].TokenID)
-        } else{
-            let previousNFTS = Pnfts.result.account_nfts
-            difference = await findNewTokenId(previousNFTS, latestNFT)
+            let latestNFT = nfts.result.account_nfts
+            if(latestNFT.length == 1){
+                difference.push(latestNFT[0].TokenID)
+            } else{
+                let previousNFTS = Pnfts.result.account_nfts
+                difference = await findNewTokenId(previousNFTS, latestNFT)
+            }
+        
+            // Check transaction results -------------------------------------------------
+            if(tx.result.meta.TransactionResult === 'tesSUCCESS'){
+                info.issuer = tx.result.Account
+                console.log("Adding to info.indexID", difference[0])
+                info.tokenID = difference[0]
+                console.log("MINT SUCCESS")
+                addNFT()
+                succesAlert = `Mint Success!`
+            }else{
+                errorAlert = "Mint Was Not Succesful [XRP network error] try again"
+            }
+            console.log("Balance changes:",
+            JSON.stringify(xrpl.getBalanceChanges(tx.result.meta), null, 2))
+            client.disconnect()
+
+        } catch (e) {
+            errorAlert = `Unexpected Error ${e}`
         }
-    
-        // Check transaction results -------------------------------------------------
-        if(tx.result.meta.TransactionResult === 'tesSUCCESS'){
-            info.issuer = tx.result.Account
-            console.log("Adding to info.indexID", difference[0])
-            info.tokenID = difference[0]
-            console.log("MINT SUCCESS")
-            addNFT()
-        }
-        console.log("Balance changes:",
-          JSON.stringify(xrpl.getBalanceChanges(tx.result.meta), null, 2))
-        client.disconnect()
+       
     } //End of mintToken
 
     async function addNFT() {
@@ -172,16 +184,12 @@
             {/if}
             </h2>
           <p>Please use .jpg, .jpeg, and .png only</p>
-          <div class="card-actions">
+          
             {#if !base64Img}
-            <button class="btn btn-primary" on:click={()=>{fileinput.click();}}>Upload</button>
+            <div class="card-actions">
+                <button class="btn btn-primary" on:click={()=>{fileinput.click();}}>Upload</button>
+            </div>
             {:else}
-            <button class="btn btn-primary" on:click={()=>{pinJSONToIPFS(info)}} disabled={hash !== ''}>Save to IPFS</button>
-            {/if}
-            
-        </div>
-        {#if hash}
-            <a href="https://gateway.pinata.cloud/ipfs/{hash}" class="link">IPFS Gateway to CID</a>
             <label class="label">
                 <span class="label-text">Your NFT name</span>
             </label>
@@ -190,11 +198,42 @@
                 <span class="label-text">Your NFT Description</span>
             </label>
             <input bind:value={info.description} type="text" placeholder="This NFT represents..." class="input input-bordered input-success w-full max-w-xs">
+            <div class="flex space-x-2 my-3 justify-center">
+                <button class="btn btn-primary" on:click={()=>{base64Img = ''}}>Delete</button>
+                <button class="btn btn-primary" on:click={()=>{pinJSONToIPFS(info)}} disabled={hash !== ''}>Save to IPFS</button>
+            </div>
+            {/if}
+        
+        {#if hash}
+            <a href="https://gateway.pinata.cloud/ipfs/{hash}" class="link">IPFS Gateway to CID</a>
             <button class="btn btn-primary my-3" on:click={mintToken(hash)}>Mint XLS-20 NFT</button>
         {/if}
         </div>
     </div>
     </div>
+    {#if errorAlert}
+         <!-- content here -->
+        <div class="alert alert-error shadow-lg my-5">
+             <div>
+                 <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                 <span>Error! {errorAlert}</span>
+                </div>
+        </div>
+    {/if}
+
+    {#if succesAlert}
+    <!-- content here -->
+   <div class="alert alert-success shadow-lg my-5">
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <span>{succesAlert}</span>
+           </div>
+   </div>
+   <div class="flex justify-center space-x-3">
+       <a href="/mynfts" class="btn btn-info">My NFTs</a>
+       <a href="/nfts" class="btn btn-info">MarketPlace</a>
+    </div>
+{/if}
 
 
 </div>

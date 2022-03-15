@@ -16,6 +16,8 @@ if (!uri) {
     throw new Error('Please add your Mongo URI to .env.local')
 }
 
+console.log(process.env['NODE_ENV'])
+
 if (process.env['NODE_ENV'] === 'development') {
     // In development mode, use a global variable 
     // so that the value is preserved across module reloads 

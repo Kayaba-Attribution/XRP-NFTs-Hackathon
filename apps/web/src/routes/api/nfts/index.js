@@ -1,11 +1,21 @@
 import clientPromise from "$lib/db";
+import dotenv from 'dotenv';
+dotenv.config();
+
+let collectionName = 'nfts-pro'
+if (process.env['NODE_ENV'] === 'developbment'){
+    collectionName = 'nfts-local'
+}
+
+
 
 export async function get(request) { 
     const dbConnection = await clientPromise;
     const db = dbConnection.db();
-    const collection = db.collection('nfts-tc');
+    const collection = db.collection(collectionName);
     const all = await collection.find().toArray()
     console.log(all[0])
+    console.log(process.env['NODE_ENV'])
 
   return {
     status: 200,
@@ -18,7 +28,7 @@ export async function post({request}) {
 
         const dbConnection = await clientPromise;
         const db = dbConnection.db();
-        const collection = db.collection('nfts-tc');
+        const collection = db.collection(collectionName);
         console.log("CONECTED")
         
         const nft = await request.json()

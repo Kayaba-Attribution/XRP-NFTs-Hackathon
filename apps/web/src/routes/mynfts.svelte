@@ -49,6 +49,7 @@
             console.log("Response:", obj)
             CleanNFTs.push(obj)   
         }
+        console.log("NFTs", nfts)
         console.log("NFTs", CleanNFTs)
         
 

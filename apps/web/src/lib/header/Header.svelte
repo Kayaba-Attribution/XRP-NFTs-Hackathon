@@ -84,6 +84,11 @@
 	
 	<div class="flex-none  px-2  lg:flex">
 		<div class="flex items-center">
+			<div class="space-x-3 hidden md:flex">
+				<a href="/mint" class="btn btn-outline btn-info">Mint</a>
+				<a href="/mynfts" class="btn btn-outline btn-info">My NFTs</a>
+				<a href="/nfts" class="btn btn-outline btn-info">MarketPlace</a>
+			</div>
 				<!-- The button to open modal -->
 		<!-- LOGIN BUTTON -->
 
