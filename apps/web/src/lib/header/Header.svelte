@@ -34,7 +34,7 @@
 	<label class="modal-box relative" for="">
 		<h3 class="text-lg font-bold">Please Enter Your Wallet Secret</h3>
 		<p class="py-4">DO NOT ENTER LIVE NETWORK SECRETS!</p>
-		<a class="py-4 link" href="https://xrpl.org/xrp-testnet-faucet.html">Create a testnet wallet here</a>
+		<a class="py-4 link" href="https://xrpl.org/xrp-testnet-faucet.html">Generate NFT-Devnet credentials here</a>
 		<div class="flex justify-center">
 			<input type="text" bind:value={input_secret} placeholder="sn3nxiW7v8KXzPzAqzyHXbSSKNuN9" class="input input-bordered input-primary w-full max-w-xs my-6">
 		</div>

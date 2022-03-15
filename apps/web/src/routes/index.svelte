@@ -32,16 +32,12 @@
             </div>
             <div class="py-4 text-2xl font-bold text-center md:text-left"> The easy, no-code, and convenient way to create your own XLS-20 NFT in XRPL</div>
             <div class="flex justify-center md:justify-start py-2">
-                <button class="btn btn-primary">
-                    <a href="/mint">
+                    <a href="/mint" class="btn btn-primary">
                         Mint Your Own NFT!!
                     </a>
-                </button>
-                <button class="btn btn-primary ml-3">
-                    <a href="/nfts">
+                    <a href="/nfts" class="btn btn-primary ml-3" >
                        See All NFTs
                     </a>
-                </button>
             </div>
         </div> 
         <div class="grid flex-grow md:w-1/3 card rounded-box place-items-center">
