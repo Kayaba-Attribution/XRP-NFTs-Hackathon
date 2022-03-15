@@ -59,11 +59,13 @@
 
     //let secret = 'snc2f4ECYGbtgDggprr8DRrrvLc9v'
     //let tokenUrl = `ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf4dfuylqabf3oclgtqy55fbzdi`
+    let minting = false;
     let flags = 8;
     let succesAlert = ''
     let errorAlert = ''
     
     async function mintToken(hash) {
+        minting = true
         try {
             let tokenUrl = `https://gateway.pinata.cloud/ipfs/${hash}`
             const wallet = xrpl.Wallet.fromSeed($secret)
@@ -123,9 +125,11 @@
             console.log("Balance changes:",
             JSON.stringify(xrpl.getBalanceChanges(tx.result.meta), null, 2))
             client.disconnect()
+            minting = false
 
         } catch (e) {
             errorAlert = `Unexpected Error ${e}`
+            minting = true
         }
        
     } //End of mintToken
@@ -206,7 +210,7 @@
         
         {#if hash}
             <a href="https://gateway.pinata.cloud/ipfs/{hash}" class="link">IPFS Gateway to CID</a>
-            <button class="btn btn-primary my-3" on:click={mintToken(hash)}>Mint XLS-20 NFT</button>
+            <button class="btn btn-primary {minting ? "loading": ""} my-3" on:click={mintToken(hash)}>Mint XLS-20 NFT</button>
         {/if}
         </div>
     </div>

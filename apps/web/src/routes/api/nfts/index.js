@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 let collectionName = 'nfts-pro'
-if (process.env['NODE_ENV'] === 'developbment'){
+if (process.env['NODE_ENV'] === 'development'){
     collectionName = 'nfts-local'
 }
 
