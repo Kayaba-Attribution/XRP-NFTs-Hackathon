@@ -1,6 +1,7 @@
 <script>
 	import { secret, address, findNewTokenId } from '$lib/xrpUtils';
     import { onMount } from 'svelte';
+    import Typewriter from 'svelte-typewriter'
     let savedSecret;
     onMount(() => {
         //localStorage.setItem("secret", "sp54EtKddM7gRQxcY9ienDTXxM9QL")
@@ -25,12 +26,16 @@
 
     <div class="flex flex-col w-full lg:flex-row my-12">
         <div class="grid flex-grow md:my-10 md:w-80 card rounded-box place-items-left md:mr-3">
-            <div class="text-5xl md:text-8xl font-extrabold text-center md:text-left py-3"> XRPL NFT
+            <div class="text-5xl md:text-7xl font-extrabold text-center md:text-left py-3"> XRPL NFT
                 <div class="text-transparent bg-clip-text bg-gradient-to-br from-cyan-300 to-blue-600">
-                    Generator
+                    <Typewriter loop>
+                        <p>Generator</p>
+                        <p>Manager</p>
+                        <p>Market</p>
+                    </Typewriter>
                 </div>
             </div>
-            <div class="py-4 text-2xl font-bold text-center md:text-left"> The easy, no-code, and convenient way to create your own XLS-20 NFT in XRPL</div>
+            <div class="py-4 text-2xl font-bold text-center md:text-left"> The easy, no-code, and convenient way to create, manage, and trade your XLS-20 NFTs in XRPL</div>
             <div class="flex justify-center md:justify-start py-2">
                     <a href="/mint" class="btn btn-primary">
                         Mint Your Own NFT!!
@@ -47,13 +52,22 @@
         
     </div>
 
-    <ul class="steps">
-        <li class="step step-primary">Upload Image</li>
-        <li class="step step-primary">Save To IPFS</li>
-        <li class="step step-primary">Create Sell & Buy Orders</li>
-        <li class="step step-primary">Accept or Cancel Offers</li>
-        <li class="step step-primary">Discover All NFTS</li>
-      </ul>
+
+    <div class="flex justify-center py-5 w-full">    
+        <ul class="steps">
+            <li class="step step-primary">Upload Image</li>
+            <li class="step step-primary">Save To IPFS</li>
+            <li class="step step-primary">Create Sell & Buy Orders</li>
+            <li class="step step-primary">Accept or Cancel Offers</li>
+            <li class="step step-primary">Discover All NFTS</li>
+        </ul>
+    </div>
+
+    <div class="flex justify-center py-5">
+        <a href="/mynfts" class="btn btn-primary ml-3" >
+            See Your NFTs
+        </a>
+    </div>
 
     
 </div>
