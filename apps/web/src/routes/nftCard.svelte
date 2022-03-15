@@ -396,7 +396,7 @@
             <button on:click={() => acceptBuyOffer(buyO.index)} class="btn btn-success">Accept Offer of {buyO.amount/10**6} XRP </button>
             {:else}
             <!-- Only allow the owner to cancel the offer (purely UI) -->
-            {#if buyO.owner == address}
+            {#if buyO.owner == $address}
                  <!-- content here -->
                  <button on:click={() => cancelOffer(buyO.index)} class="btn btn-error">Cancel Buy for {buyO.amount/10**6} XRP </button>
             {/if}
