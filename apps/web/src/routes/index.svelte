@@ -12,8 +12,8 @@
 
 <div class="mt-20">
 
-    <h2>HI {savedSecret}</h2>
-    <h2>Secret {$secret}</h2>
+    <!-- <h2>HI {savedSecret}</h2>
+    <h2>Secret {$secret}</h2> -->
     {#if !$secret}
         <div class="alert alert-error shadow-lg">
         <div>
