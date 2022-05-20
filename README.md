@@ -47,4 +47,4 @@ This is a [Turborepo](https://turborepo.org/) with parallel execution, that cont
 
 ### Apps
 
-- `web`: Svelte-kit website with XRPL integration in progress
+- `web`: Svelte-kit website with XRPL integration in progress.
